@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -42,12 +44,14 @@ public class ProductFeedstockController {
         Optional<ProductModel> productModelOptional = productService.findById(productFeedstockDto.getProduct_id());
         Optional<FeedstockModel> feedstockModelOptional = feedstockService.findById(productFeedstockDto.getFeedstock_id());
 
-        if (productModelOptional.isEmpty() && feedstockModelOptional.isEmpty()) {
+        if (productModelOptional.isEmpty() || feedstockModelOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Feedstock or product not found");
         }
 
         var productFeedstockModel = new ProductFeedstockModel();
         BeanUtils.copyProperties(productFeedstockDto, productFeedstockModel);
+        productFeedstockModel.setProduct_id(productModelOptional.get());
+        productFeedstockModel.setFeedstock_id(feedstockModelOptional.get());
         productFeedstockModel.setCreated_at(LocalDateTime.now(ZoneId.of("UTC")));
         return ResponseEntity.status(HttpStatus.CREATED).body(productFeedstockService.save(productFeedstockModel));
     }
@@ -60,8 +64,19 @@ public class ProductFeedstockController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ProductFeedstock not found");
         }
 
+        Optional<ProductModel> productModelOptional = productService.findById(productFeedstockDto.getProduct_id());
+        Optional<FeedstockModel> feedstockModelOptional = feedstockService.findById(productFeedstockDto.getFeedstock_id());
+
+        if (productModelOptional.isEmpty() || feedstockModelOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Feedstock or product not found");
+        }
+
         var productFeedstockModel = new ProductFeedstockModel();
         BeanUtils.copyProperties(productFeedstockDto, productFeedstockModel);
+
+        productModelOptional.ifPresent(productFeedstockModel::setProduct_id);
+        feedstockModelOptional.ifPresent(productFeedstockModel::setFeedstock_id);
+
         productFeedstockModel.setCreated_at(productFeedstockModelOptional.get().getCreated_at());
         return ResponseEntity.status(HttpStatus.CREATED).body(productFeedstockService.save(productFeedstockModel));
     }

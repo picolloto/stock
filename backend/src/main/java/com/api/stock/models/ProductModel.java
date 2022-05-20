@@ -9,8 +9,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -30,9 +28,6 @@ public class ProductModel implements Serializable {
 
     @Column(nullable = false)
     private BigDecimal value;
-
-    @OneToMany(mappedBy = "product_id")
-    Set<ProductFeedstockModel> productFeedstock = new HashSet<>();
 
     private LocalDateTime created_at;
 

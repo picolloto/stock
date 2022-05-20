@@ -6,10 +6,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -17,7 +14,7 @@ import java.util.Set;
 @DynamicUpdate
 @DynamicInsert
 @Table(name = "feedstock")
-public class FeedstockModel implements Serializable {
+public class FeedstockModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +25,6 @@ public class FeedstockModel implements Serializable {
     private String name;
 
     private Integer quantity;
-
-    @OneToMany(mappedBy = "feedstock_id")
-    Set<ProductFeedstockModel> productFeedstock = new HashSet<>();
 
     private LocalDateTime created_at;
 }
