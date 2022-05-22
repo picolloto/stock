@@ -1,0 +1,28 @@
+.MuiList-root {
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 5px;
+
+    .MuiListItem-root {
+        width: unset;
+        padding-right: 0;
+        margin: 15px;
+        .MuiGrid-container {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            border-radius: 5px;
+            font-size: 16px;
+            box-shadow: 1px 1px 4px 1px rgba(0,0,0,0.2);
+
+            .MuiGrid-item{
+                padding: 10px;
+            }
+
+            &.grid-container-header {
+                // color: rgb(9, 9, 145);
+                box-shadow: none;
+                .MuiTypography-root {
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+}
