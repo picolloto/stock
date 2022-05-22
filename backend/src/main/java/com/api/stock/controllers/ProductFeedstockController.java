@@ -21,9 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)

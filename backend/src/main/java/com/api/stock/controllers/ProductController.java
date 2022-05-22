@@ -1,5 +1,6 @@
 package com.api.stock.controllers;
 
+import com.api.stock.Config;
 import com.api.stock.dtos.ProductDto;
 import com.api.stock.models.ProductModel;
 import com.api.stock.services.ProductService;
@@ -22,7 +23,7 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/product")
-public class ProductController {
+public class ProductController extends Config {
     @Autowired
     private ProductService productService;
 
