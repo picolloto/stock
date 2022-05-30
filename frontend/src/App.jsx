@@ -1,21 +1,21 @@
-import { lazy } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { useState } from "react";
+import "sweetalert2/src/sweetalert2.scss";
+import NavMenu from "./components/NavMenu";
 
-const Feedstock = lazy(() => import("./pages/Feedstock"));
-
-const Product = lazy(() => import("./pages/Product"));
-
-const ProductFeedstock = lazy(() => import("./pages/ProductFeedstock"));
+import Feedstock from "./pages/Feedstock";
+import Product from "./pages/Product";
+import ProductFeedstock from "./pages/ProductFeedstock";
 
 const App = () => {
+    const [menuActive, setMenuActive] = useState(1);
+
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/product" element={<Product />} />
-                <Route path="/feedstock" element={<Feedstock />} />
-                <Route path="/productFeedstock" element={<ProductFeedstock />} />
-            </Routes>
-        </BrowserRouter>
+        <>
+            <NavMenu onChangeMenu={(id) => setMenuActive(id)} />
+            {menuActive === 1 && <ProductFeedstock />}
+            {menuActive === 2 && <Product />}
+            {menuActive === 3 && <Feedstock />}
+        </>
     );
 };
 
