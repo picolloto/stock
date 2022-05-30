@@ -1,34 +1,73 @@
-import { Container } from "@mui/material";
+import { Box, Container, TextField, Grid, InputAdornment } from "@mui/material";
 
-import "./Product.scss";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { deleteProduct, getProducts } from "./productService";
+import Swal from "sweetalert2";
+import { deleteProduct, getProducts, insertProduct } from "./productService";
 import Crud from "../../components/Crud";
 import ModalCrud from "../../components/ModalCrud";
 
 const Product = () => {
     const [products, setProducts] = useState([]);
-    const [selectedRow, setSelectedRow] = useState({});
+    const initialValue = {
+        name: "",
+        value: 0,
+    };
+    const [selectedRow, setSelectedRow] = useState(initialValue);
+
     const [openModal, setOpenModal] = useState(false);
 
-    useEffect(() => {
-        const didMount = async () => {
-            const { data } = await getProducts();
-
-            setProducts(data.content);
-        };
-
-        didMount();
+    const handleChange = useCallback((e) => {
+        const { name, value } = e.target;
+        setSelectedRow((prevState) => ({ ...prevState, [name]: value }));
     }, []);
 
-    const onEdit = useCallback((item) => {
+    const onEdit = useCallback(async (item) => {
         setOpenModal(true);
         setSelectedRow(item);
     }, []);
 
-    const onDelete = useCallback(async (item) => {
-        await deleteProduct(item.id);
+    const didMount = useCallback(async () => {
+        const { data: productList } = await getProducts();
+        setProducts(productList.content);
+    }, []);
+
+    const handleSubmit = useCallback(async () => {
+        try {
+            await insertProduct(selectedRow);
+            didMount();
+            setOpenModal(false);
+            setSelectedRow(initialValue);
+            if (!!selectedRow.id) {
+                Swal.fire("Informação", "Produto cadastrado com sucesso.", "success");
+            }
+            Swal.fire("Informação", "Produto alterado com sucesso.", "success");
+        } catch {
+            Swal.fire("Atenção", "Ocorreu um problema inesperado ao salvar o produto!", "warning");
+        }
+    }, [selectedRow]);
+
+    const onDelete = useCallback((item) => {
+        Swal.fire({
+            title: "Atenção",
+            text: `Tem certeza que deseja excluir o produto '${item.name}'?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#007c06",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Confirmar",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const product = await deleteProduct(item.id);
+                    Swal.fire("Excluído", product.response.data, "success");
+                } catch (e) {
+                    Swal.fire("Atenção", e.response.data, "warning");
+                } finally {
+                    didMount();
+                }
+            }
+        });
     }, []);
 
     const columns = useMemo(
@@ -59,15 +98,56 @@ const Product = () => {
         []
     );
 
+    useEffect(() => {
+        didMount();
+    }, []);
+
     return (
         <Container>
-            <Crud rows={products} columns={columns} handleEdit={onEdit} handleDelete={onDelete} />
+            <Crud
+                title="Gerenciar cadastro de produto"
+                rows={products}
+                columns={columns}
+                handleEdit={onEdit}
+                handleDelete={onDelete}
+                handleNewItem={() => setOpenModal(true)}
+            />
             {openModal && (
                 <ModalCrud
-                    selectedRow={selectedRow}
+                    title="Cadastrar um novo produto"
                     isOpen={openModal}
-                    onCancel={() => setOpenModal(false)}
-                />
+                    handleCancel={() => setOpenModal(false)}
+                    handleSave={handleSubmit}
+                >
+                    <Box mt={1}>
+                        <Grid container spacing={1}>
+                            <Grid item xs={6}>
+                                <TextField
+                                    name="name"
+                                    label="Nome"
+                                    onChange={handleChange}
+                                    value={selectedRow.name || ""}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    name="value"
+                                    label="Valor"
+                                    type="number"
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">R$</InputAdornment>
+                                        ),
+                                        inputMode: "numeric",
+                                        pattern: "[0-9]*",
+                                    }}
+                                    onChange={handleChange}
+                                    value={selectedRow.value || null}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Box>
+                </ModalCrud>
             )}
         </Container>
     );
