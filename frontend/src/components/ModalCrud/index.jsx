@@ -2,23 +2,20 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/
 import PropTypes from "prop-types";
 
 const ModalCrud = ({ children, title, isOpen, handleSave, handleCancel }) => (
-    <Dialog
-        fullScreen
-        open={isOpen}
-        onClose={handleCancel}
-        aria-labelledby="responsive-dialog-title"
-    >
-        <DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
-        <DialogContent>{children}</DialogContent>
-        <DialogActions>
-            <Button autoFocus onClick={handleCancel}>
-                Cancelar
-            </Button>
-            <Button onClick={handleSave} autoFocus>
-                Salvar
-            </Button>
-        </DialogActions>
-    </Dialog>
+    <div>
+        <Dialog open={isOpen} onClose={handleCancel}>
+            <DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
+            <DialogContent>{children}</DialogContent>
+            <DialogActions>
+                <Button variant="contained" color="error" autoFocus onClick={handleCancel}>
+                    Cancelar
+                </Button>
+                <Button variant="contained" color="success" onClick={handleSave} autoFocus>
+                    Salvar
+                </Button>
+            </DialogActions>
+        </Dialog>
+    </div>
 );
 
 ModalCrud.propTypes = {
