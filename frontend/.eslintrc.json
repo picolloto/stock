@@ -45,6 +45,9 @@
               }
             }
           ],
-          "no-extra-boolean-cast": "off"
+          "no-extra-boolean-cast": "off",
+          "import/prefer-default-export": "off",
+          "default-param-last": "off",
+          "consistent-return": "off"
     }
 }
