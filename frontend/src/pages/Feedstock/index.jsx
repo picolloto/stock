@@ -36,10 +36,11 @@ const Feedstock = () => {
             didMount();
             setOpenModal(false);
             setSelectedRow(initialValue);
-            if (!!selectedRow.id) {
+            if (!selectedRow.id) {
                 Swal.fire("Informação", "Matéria-prima cadastrada com sucesso.", "success");
+            } else {
+                Swal.fire("Informação", "Matéria-prima alterada com sucesso.", "success");
             }
-            Swal.fire("Informação", "Matéria-prima alterada com sucesso.", "success");
         } catch {
             Swal.fire(
                 "Atenção",

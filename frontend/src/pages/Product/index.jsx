@@ -40,8 +40,9 @@ const Product = () => {
             setSelectedRow(initialValue);
             if (!!selectedRow.id) {
                 Swal.fire("Informação", "Produto cadastrado com sucesso.", "success");
+            } else {
+                Swal.fire("Informação", "Produto alterado com sucesso.", "success");
             }
-            Swal.fire("Informação", "Produto alterado com sucesso.", "success");
         } catch {
             Swal.fire("Atenção", "Ocorreu um problema inesperado ao salvar o produto!", "warning");
         }
